@@ -38,8 +38,10 @@
  *   alike, all with `Can't call "X" in read-only mode`. The first draft said only "nodes", which
  *   would have left an agent thinking variables were still writable. The wording also avoids
  *   repeating "read-only" — Figma's own message says it; what this adds is the scope and the exit.
- * - FigJam **does** have frames: `createFrame`, `createSection`, `createRectangle` and `createText`
- *   all succeed there. What it lacks is components, variables and styles, whose APIs are missing
+ * - FigJam **does** have frames: `createFrame`, `createSection`, `createRectangle`, `createText` and
+ *   `createConnector` all succeed there (verified live — `create_connector` builds real
+ *   ConnectorNodes, with `connectorStart`/`connectorEnd` endpoint binding and a text label, in an
+ *   actual FigJam board). What it lacks is components, variables and styles, whose APIs are missing
  *   outright — `figma.variables` is `undefined` and `createPaintStyle` is `not a function`, so the
  *   raw errors ("not a function") say nothing about the editor at all. That makes the suffix carry
  *   more weight here than in Dev Mode, where Figma's own message is already explicit.
@@ -54,7 +56,8 @@ const EDITOR_LIMITATIONS: Readonly<Record<string, string>> = {
     'changes.',
   figjam:
     'FigJam has no components, variables or styles, so the tools that read or edit them fail ' +
-    'there — frames, sections, shapes and text all work. Open a Figma Design file for the rest.',
+    'there — frames, sections, shapes, text and connectors all work. Open a Figma Design file for ' +
+    'the rest.',
 };
 
 /** The limitation an agent (or the user) should know about in `editorType`, or null in Figma Design. */

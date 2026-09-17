@@ -19,6 +19,7 @@ import { cloneNodeTool } from './clone-node.js';
 import { combineAsVariantsTool } from './combine-as-variants.js';
 import { componentMapTool } from './component-map.js';
 import { createComponentTool } from './create-component.js';
+import { createConnectorTool } from './create-connector.js';
 import { createEffectStyleTool } from './create-effect-style.js';
 import { createEllipseTool } from './create-ellipse.js';
 import { createFrameTool } from './create-frame.js';
@@ -229,6 +230,7 @@ export const ALL_TOOL_SPECS: readonly ToolSpec[] = [
   createEllipseTool,
   createComponentTool,
   createSectionTool,
+  createConnectorTool,
   createInstanceTool,
   combineAsVariantsTool,
   // Motion (beta) — Figma Design only
