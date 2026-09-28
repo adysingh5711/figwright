@@ -20,6 +20,7 @@ import {
 } from '@figwright/shared';
 
 import { cssAngleFromGradientTransform } from './gradient-angle.js';
+import { getTextHost } from './handlers/text-sublayer.js';
 
 const isGradient = (paint: Paint): paint is GradientPaint =>
   paint.type === 'GRADIENT_LINEAR' ||
@@ -743,6 +744,12 @@ const enrichWithMixins = (node: SceneNode, base: SerializedNode): SerializedNode
     if (needsSegments && typeof text.getStyledTextSegments === 'function') {
       out.segments = serializeTextSegments(text);
     }
+  } else {
+    // STICKY / SHAPE_WITH_TEXT / TABLE_CELL / CONNECTOR bake their caption into a `text` sublayer
+    // with no id of its own — surface just the characters (not the full run/segment machinery
+    // above, which is TextNode-specific) so the caption is at least visible without a screenshot.
+    const host = getTextHost(node);
+    if (host !== null) out.characters = host.characters;
   }
 
   return out;

@@ -1,6 +1,7 @@
 import type { MutateResult } from '@figwright/shared';
 
 import type { SandboxToolHandler } from '../dispatcher.js';
+import { getTextHost } from './text-sublayer.js';
 
 export const createSetTextHandler =
   (figmaCtx: typeof figma): SandboxToolHandler =>
@@ -11,10 +12,13 @@ export const createSetTextHandler =
       throw new TypeError('set_text: characters must be a string');
 
     const node = await figmaCtx.getNodeByIdAsync(p.nodeId);
-    if (node === null || node.type !== 'TEXT') {
-      throw new Error(`set_text: node ${p.nodeId} is not a TEXT node`);
+    const text = node === null ? null : getTextHost(node);
+    if (node === null || text === null) {
+      throw new Error(
+        `set_text: node ${p.nodeId} is not a TEXT node or a text-carrying container ` +
+          '(STICKY, SHAPE_WITH_TEXT, TABLE_CELL, CONNECTOR)',
+      );
     }
-    const text = node as TextNode;
 
     // Figma requires every font in the node to be loaded before mutating characters.
     const fonts =
@@ -25,6 +29,6 @@ export const createSetTextHandler =
 
     text.characters = p.characters;
 
-    const result: MutateResult = { ok: true, nodeId: text.id };
+    const result: MutateResult = { ok: true, nodeId: node.id };
     return result;
   };

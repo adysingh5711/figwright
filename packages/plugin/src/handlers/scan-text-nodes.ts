@@ -3,6 +3,7 @@ import type { ScanTextNodesResult, SerializedNode } from '@figwright/shared';
 import type { SandboxToolHandler } from '../dispatcher.js';
 import { serializeFlat } from '../serializer.js';
 import { resolveScope, walk } from '../traverse.js';
+import { TEXT_SUBLAYER_TYPES } from './text-sublayer.js';
 
 export const createScanTextNodesHandler =
   (figmaCtx: typeof figma): SandboxToolHandler =>
@@ -12,7 +13,7 @@ export const createScanTextNodesHandler =
 
     const matches: SceneNode[] = [];
     for (const node of walk(scope)) {
-      if (node.type === 'TEXT') matches.push(node);
+      if (node.type === 'TEXT' || TEXT_SUBLAYER_TYPES.has(node.type)) matches.push(node);
     }
     const nodes: SerializedNode[] = await Promise.all(matches.map(serializeFlat));
     const result: ScanTextNodesResult = { nodes };
